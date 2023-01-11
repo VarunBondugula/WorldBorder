@@ -8,6 +8,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class WorldFillTask implements Runnable {
     private final transient CoordXZ lastChunk = new CoordXZ(0, 0);
@@ -427,7 +430,11 @@ public class WorldFillTask implements Runnable {
         lastReport = Config.Now();
         double perc = getPercentageCompleted();
         if (perc > 100) perc = 100;
-        sendMessage(reportNum + " more chunks processed (" + (reportTotal + reportNum) + " total, ~" + Config.coord.format(perc) + "%" + ")");
+        //String message = reportNum + " more chunks processed (" + (reportTotal + reportNum) + " total, ~" + Config.coord.format(perc) + "%" + ")";
+        String message = "World: " + world + " | Percentage: " + Config.coord.format(perc) + "%";
+        for(Player p : Bukkit.getOnlinePlayers()){
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
+        }
         reportTotal += reportNum;
         reportNum = 0;
 
